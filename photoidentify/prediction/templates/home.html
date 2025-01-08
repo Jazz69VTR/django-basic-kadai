@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>画像判定アプリ</title>
+    <style>
+        #result {
+            text-align: center;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>画像判定します</h2>
+
+<input type="file" id="fileInput">
+<button onclick="processImage()">判定</button>
+
+<div id="result">
+    <img id="uploadedImage" src="" alt="Uploaded Image" style="max-width: 200px; display: none;">
+    <table id="categoryTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>カテゴリ</th>
+                <th>確率</th>
+            </tr>
+        </thead>
+        <tbody id="categoryBody"></tbody>
+    </table>
+</div>
+
+<script>
+function processImage() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('uploadedImage').src = e.target.result;
+            document.getElementById('uploadedImage').style.display = 'block';
+
+// ここでカテゴリ情報を表示するためのサンプルデータ。
+displayCategories([
+{ name: 'orange', probability: 0.67304903 },
+{ name: 'lemon', probability: 0.09229327 },
+{ name: 'banana', probability: 0.07033144 },
+{ name: 'pineapple', probability: 0.0461273 },
+{ name: 'acorn_squash', probability: 0.017638166 }
+            ]);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function displayCategories(categories) {
+    const categoryBody = document.getElementById('categoryBody');
+    categoryBody.innerHTML = ''; // 以前のデータをクリア
+    categories.forEach(category => {
+        const row = document.createElement('tr');
+        const categoryCell = document.createElement('td');
+        categoryCell.textContent = category.name;
+        const probabilityCell = document.createElement('td');
+        probabilityCell.textContent = (category.probability * 100).toFixed(4) + ' %';
+        row.appendChild(categoryCell);
+        row.appendChild(probabilityCell);
+        categoryBody.appendChild(row);
+    });
+
+    document.getElementById('categoryTable').style.display = 'table'; // テーブルを表示
+}
+</script>
+
+</body>
+</html>
